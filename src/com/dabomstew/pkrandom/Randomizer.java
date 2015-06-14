@@ -293,9 +293,9 @@ public class Randomizer {
 		// actually call this code (Kappa)
 		if (settings.isUseMinimumCatchRate()) {
 			if (romHandler instanceof Gen5RomHandler) {
-				romHandler.minimumCatchRate(50, 25);
-			} else {
 				romHandler.minimumCatchRate(75, 37);
+			} else {
+				romHandler.minimumCatchRate(110, 55);
 			}
 		}
 		switch (settings.getWildPokemonMod()) {
