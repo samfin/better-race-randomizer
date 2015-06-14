@@ -2978,6 +2978,12 @@ public abstract class AbstractRomHandler implements RomHandler {
 	}
 
 	@Override
+	public void randomizeIcePath() {
+		// default: do nothing
+
+	}
+
+	@Override
 	public void applyXAccNerfPatch() {
 		// default: do nothing
 

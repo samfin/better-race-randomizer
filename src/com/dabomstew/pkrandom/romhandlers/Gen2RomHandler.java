@@ -1786,6 +1786,9 @@ public class Gen2RomHandler extends AbstractGBRomHandler {
 		if (romEntry.codeTweaks.get("BWXPTweak") != null) {
 			available |= CodeTweaks.BW_EXP_PATCH;
 		}
+		if (romEntry.codeTweaks.get("IceTweak") != null) {
+			available |= CodeTweaks.RANDOM_ICEPATH;
+		}
 		if (romEntry.getValue("TextDelayFunctionOffset") != 0) {
 			available |= CodeTweaks.FASTEST_TEXT;
 		}
@@ -1804,6 +1807,11 @@ public class Gen2RomHandler extends AbstractGBRomHandler {
 		} catch (IOException e) {
 
 		}
+	}
+
+	@Override
+	public void randomizeIcePath() {
+		System.out.println("Randomizing ice path...");
 	}
 
 	@Override

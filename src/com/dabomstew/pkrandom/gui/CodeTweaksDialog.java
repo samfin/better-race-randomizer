@@ -45,6 +45,7 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 		fastestTextCB.setVisible((available & CodeTweaks.FASTEST_TEXT) > 0);
 		runningShoesCB
 				.setVisible((available & CodeTweaks.RUNNING_SHOES_INDOORS) > 0);
+		icePathCB.setVisible((available & CodeTweaks.RANDOM_ICEPATH) > 0);
 	}
 
 	private void restoreFrom(int current) {
@@ -54,6 +55,7 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 		fastestTextCB.setSelected((current & CodeTweaks.FASTEST_TEXT) > 0);
 		runningShoesCB
 				.setSelected((current & CodeTweaks.RUNNING_SHOES_INDOORS) > 0);
+		icePathCB.setSelected((current & CodeTweaks.RANDOM_ICEPATH) > 0);
 	}
 
 	public boolean pressedOK() {
@@ -77,6 +79,9 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 		if (runningShoesCB.isSelected()) {
 			choice |= CodeTweaks.RUNNING_SHOES_INDOORS;
 		}
+		if (icePathCB.isSelected()) {
+			choice |= CodeTweaks.RANDOM_ICEPATH;
+		}
 		return choice;
 	}
 
@@ -98,6 +103,7 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 		cancelButton = new javax.swing.JButton();
 		fastestTextCB = new javax.swing.JCheckBox();
 		runningShoesCB = new javax.swing.JCheckBox();
+		icePathCB = new javax.swing.JCheckBox();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		java.util.ResourceBundle bundle = java.util.ResourceBundle
@@ -150,6 +156,11 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 		runningShoesCB.setToolTipText(bundle
 				.getString("CodeTweaksDialog.runningShoesCB.toolTipText")); // NOI18N
 
+		icePathCB.setText(bundle
+				.getString("CodeTweaksDialog.icePathCB.text")); // NOI18N
+		icePathCB.setToolTipText(bundle
+				.getString("CodeTweaksDialog.icePathCB.toolTipText")); // NOI18N
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
@@ -190,6 +201,8 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 																				.addComponent(
 																						bwPatchCB)
 																				.addComponent(
+																						icePathCB)
+																				.addComponent(
 																						headerLabel))
 																.addGap(0,
 																		0,
@@ -216,6 +229,9 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 								.addComponent(runningShoesCB)
+								.addPreferredGap(
+										javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+								.addComponent(icePathCB)
 								.addPreferredGap(
 										javax.swing.LayoutStyle.ComponentPlacement.RELATED,
 										16, Short.MAX_VALUE)
@@ -252,5 +268,6 @@ public class CodeTweaksDialog extends javax.swing.JDialog {
 	private javax.swing.JCheckBox nerfXAccCB;
 	private javax.swing.JButton okButton;
 	private javax.swing.JCheckBox runningShoesCB;
+	private javax.swing.JCheckBox icePathCB;
 	// End of variables declaration//GEN-END:variables
 }

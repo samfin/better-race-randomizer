@@ -419,4 +419,7 @@ public interface RomHandler {
 
 	public void applyRunningShoesIndoorsPatch();
 
+	public void randomizeIcePath();
+
+
 }
