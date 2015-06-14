@@ -134,6 +134,11 @@ public class Randomizer {
 					&& (currentCodeTweaks & CodeTweaks.RUNNING_SHOES_INDOORS) > 0) {
 				romHandler.applyRunningShoesIndoorsPatch();
 			}
+			
+			if ((codeTweaksAvailable & CodeTweaks.RANDOM_ICEPATH) > 0
+					&& (currentCodeTweaks & CodeTweaks.RANDOM_ICEPATH) > 0) {
+				romHandler.randomizeIcePath();
+			}
 		}
 
 		// Hollows?

@@ -56,6 +56,194 @@ import com.dabomstew.pkrandom.pokemon.Pokemon;
 import com.dabomstew.pkrandom.pokemon.Trainer;
 import com.dabomstew.pkrandom.pokemon.TrainerPokemon;
 
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+class IcePuzzleGenerator {
+	class Edge implements Comparable<Edge> {
+		Edge(int first, int second) {
+			this.first = first;
+			this.second = second;
+		}
+		
+		int first, second;
+
+		@Override
+		public int compareTo(Edge e) {
+			if(first < e.first) return -1;
+			if(first > e.first) return 1;
+			if(second < e.second) return -1;
+			if(second > e.second) return 1;
+			return 0;
+		}
+	}
+	
+	final int W, H, N, x0, y0, x1, y1;
+	int[][] grid;
+	boolean[][] boulders;
+	ArrayList<Edge>[] edges, tmp_edges;
+	Random random;
+	final int[][] dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+
+	int[] dist, dist_copy;
+	final int INF = 9999999;
+	
+	@SuppressWarnings("unchecked")
+	IcePuzzleGenerator(int W, int H, int x0, int y0, int x1, int y1) {
+		this.W = W;
+		this.H = H;
+		this.N = W * H;
+		this.x0 = x0;
+		this.y0 = y0;
+		this.x1 = x1;
+		this.y1 = y1;
+		edges = new ArrayList[N];
+		tmp_edges = new ArrayList[N];
+		random = new Random();
+	}
+
+	void init_grid() {
+		grid = new int[H][W];
+		boulders = new boolean[H/2][W/2];
+	    for(int i = 0; i < H; i++) {
+	        for(int j = 0; j < W; j++) {
+	            grid[i][j] = 0;
+	            boulders[i/2][j/2] = false;
+	        }
+	    }
+	    for(int i = 0; i < H; i++)
+	        grid[i][0] = grid[i][W-1] = grid[i][1] = grid[i][W-2] = 1;
+	    for(int j = 0; j < W; j++)
+	        grid[0][j] = grid[H-1][j] = grid[1][j] = grid[H-2][j] = 1;
+	    grid[x0][y0] = grid[x1][y1] = 0;
+	}
+
+	void populate_grid(int n_boulders) {
+	    for(int k = 0; k < n_boulders; k++) {
+	        int i = 2 + random.nextInt(H-4);
+	        int j = 2 + random.nextInt(W-4);
+	        if(boulders[i/2][j/2]) {
+	            k--;
+	            continue;
+	        }
+	        grid[i][j] = 1;
+	        boulders[i/2][j/2] = true;
+	    }
+	}
+
+	@SuppressWarnings("unused")
+	void populate_graph() {
+		for(int i = 0; i < N; i++)
+			edges[i] = new ArrayList<Edge>();
+	    for(int i = 0; i < N; i++)
+	        edges[i].clear();
+	    for(int i = 0; i < H; i++) {
+	        for(int j = 0; j < W; j++) {
+	            if(grid[i][j] == 1) continue;
+	            for(int d = 0; d < 4; d++) {
+	                int k = i, l = j, w = 0;
+	                while(grid[k + dir[d][0]][l + dir[d][1]] == 0) {
+	                    k += dir[d][0];
+	                    l += dir[d][1];
+	                    w++;
+	                }
+	                if(k != i || j != l) {
+	                    int n1 = W*i+j;
+	                    int n2 = W*k+l;
+	                    edges[n1].add(new Edge(n2, 1));
+	                }
+	            }
+	        }
+	    }
+	}
+	void reverse_graph() {
+	    for(int i = 0; i < N; i++) {
+	        tmp_edges[i] = edges[i];
+	        edges[i] = new ArrayList<Edge>();
+	    }
+	    for(int i = 0; i < N; i++) {
+	        for(Edge e : tmp_edges[i]) {
+	            edges[e.first].add(new Edge(i, e.second));
+	        }
+	    }
+	}
+
+	int solve_graph(int s, int t) {
+		// Dijkstra
+		dist = new int[N];
+		boolean[] visited = new boolean[N];
+		Queue<Edge> q = new PriorityQueue<Edge>();
+	    for(int i = 0; i < N; i++) {
+	        dist[i] = INF;
+	        visited[i] = false;
+	    }
+	    q.add(new Edge(0, s));
+	    while(!q.isEmpty()) {
+	        Edge a = q.remove();
+	        int d = a.first;
+	        int k = a.second;
+	        if(visited[k]) continue;
+	        visited[k] = true;
+	        for(Edge e : edges[k]) {
+	            int k2 = e.first;
+	            int w = d + e.second;
+	            if(w >= dist[k2]) continue;
+	            dist[k2] = w;
+	            q.add(new Edge(w, k2));
+	        }
+	    }
+	    return dist[t];
+	}
+
+	void print_grid() {
+	    for(int i = 0; i < H; i++) {
+			String s = "";
+	        for(int j = 0; j < W; j++) {
+	            if(grid[i][j] == 1)
+	                s += "@";
+	            else
+	                s += ".";
+	        }
+	        System.out.println(s);
+	    }
+	}
+	
+	int[][] generate_grid(int difficulty) {
+	    int s = W*x0 + y0;
+	    int t = W*x1 + y1;
+	    int d;
+	    while(true) {
+	        init_grid();
+	        // Add some random stones
+	        populate_grid(random.nextInt(10) + 15);
+	        // Convert grid to graph representation
+	        populate_graph();
+	        // Check path from start to end
+	        d = solve_graph(s, t);
+	        if(d == INF || d < difficulty) continue;
+	        dist_copy = dist;
+	        dist = new int[N];
+	        reverse_graph();
+	        solve_graph(t, s);
+	        // Make sure that every square reachable from the source can get back to the source
+	        boolean success = true;
+	        for(int i = 0; i < N; i++) {
+	            if(dist_copy[i] != INF && dist[i] == INF) {
+	                success = false;
+	                break;
+	            }
+	        }
+	        if(success) break;
+	    }
+	    /*
+	    System.out.println(d);
+	    print_grid();
+	    */
+	    return grid;
+	}
+}
+
+
 public class Gen2RomHandler extends AbstractGBRomHandler {
 
 	public static class Factory implements RomHandler.Factory {
@@ -1812,6 +2000,38 @@ public class Gen2RomHandler extends AbstractGBRomHandler {
 	@Override
 	public void randomizeIcePath() {
 		System.out.println("Randomizing ice path...");
+		int offset = 0xAEB3E;
+		// const int W = 18, H = 16, N = W*H;
+		// const int x0 = H-2, y0 = W-3;
+		// const int x1 = 9, y1 = W-2;
+		IcePuzzleGenerator puzzle = new IcePuzzleGenerator(18, 16, 14, 15, 9, 16);
+		int[][] puzzle_grid = puzzle.generate_grid(18);
+		byte[] ice_tileset = {0x1f, 0x2c, 0x2e, 0x2d, 0x2f};
+		for(int i = 0; i < 6; i++) {
+			int n = 0;
+			for(int j = 0; j < 7; j++) {
+				int k = 2 + 2*i;
+				int l = 2 + 2*j;
+				int ind = 0;
+				if(puzzle_grid[k][l] == 1)
+					ind = 1;
+				else if(puzzle_grid[k][l+1] == 1)
+					ind = 2;
+				else if(puzzle_grid[k+1][l] == 1)
+					ind = 3;
+				else if(puzzle_grid[k+1][l+1] == 1)
+					ind = 4;
+				this.rom[offset] = ice_tileset[ind];
+				offset++;
+				n++;
+			}
+			if(i == 3) {
+				this.rom[offset] = 0x15;
+				offset++;
+				n++;
+			}
+			offset += 20 - n;
+		}
 	}
 
 	@Override
