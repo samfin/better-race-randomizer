@@ -580,7 +580,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 					enc.pokemon = noLegendaries ? randomNonLegendaryPokemon()
 							: randomPokemon();
 					while (banned.contains(enc.pokemon)
-							|| (area.battleTrappersBanned && hasBattleTrappingAbility(enc.pokemon))) {
+							|| (area.battleTrappersBanned && hasBattleTrappingAbility(enc.pokemon)
+							|| enc.level < 10 && firstEvolution(enc.pokemon) != null)) {
 						enc.pokemon = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
