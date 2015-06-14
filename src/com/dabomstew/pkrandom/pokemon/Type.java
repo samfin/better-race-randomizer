@@ -44,6 +44,12 @@ public enum Type {
 	private Type(boolean isHackOnly) {
 		this.isHackOnly = isHackOnly;
 	}
+	
+	public boolean isSpecial() {
+		return (this == GRASS || this == WATER || this == FIRE ||
+				this == ELECTRIC || this == ICE || this == PSYCHIC ||
+				this == DRAGON || this == DARK);
+	}
 
 	private static final List<Type> VALUES = Collections
 			.unmodifiableList(Arrays.asList(values()));

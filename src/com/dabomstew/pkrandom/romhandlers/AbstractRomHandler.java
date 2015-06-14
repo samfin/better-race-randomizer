@@ -2492,14 +2492,24 @@ public abstract class AbstractRomHandler implements RomHandler {
 				// else random
 			}
 		}
+		// Physical or special move
+		double phys = pkmn.attack / 100.0;
+		double spec = pkmn.spatk / 100.0;
+		boolean is_special = (spec >= phys);
+		double p = Math.abs(spec - phys);
+		p = 1 - 1 / (1 + Math.exp(-3 * p));;
+		if(this.random.nextDouble() < p)
+			is_special ^= true;
+		damaging = damaging || this.random.nextDouble() < 0.5;
+
 		// Filter by type, and if necessary, by damage
 		List<Move> canPick = new ArrayList<Move>();
 		for (Move mv : allMoves) {
 			if (mv != null && !RomFunctions.bannedRandomMoves[mv.number]
 					&& !bannedForThisGame.contains(mv.number)
 					&& (mv.type == typeOfMove || typeOfMove == null)) {
-				if (!damaging
-						|| (mv.power > 1 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number])) {
+				boolean isGoodMove = mv.power >= 40 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial());
+				if(damaging ^ isGoodMove == false) {
 					canPick.add(mv);
 				}
 			}
@@ -2509,6 +2519,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 			return pickMove(pkmn, typeThemed, damaging, bannedForThisGame);
 		} else {
 			// pick a random one
+			// System.out.println(pkmn.name + "\t" + canPick.get(this.random.nextInt(canPick.size())).name + "\t" + damaging + "\t" + is_special + "\t" + p);
 			return canPick.get(this.random.nextInt(canPick.size())).number;
 		}
 	}
