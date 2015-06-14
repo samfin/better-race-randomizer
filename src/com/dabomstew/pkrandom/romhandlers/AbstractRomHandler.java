@@ -1219,7 +1219,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 		List<Integer> requiredEarlyOn = this.getEarlyRequiredHMMoves();
 		Map<Pokemon, boolean[]> compat = this.getTMHMCompatibility();
 		List<Integer> tmHMs = new ArrayList<Integer>(this.getTMMoves());
-		tmHMs.addAll(this.getHMMoves());
+		List<Integer> HMMoves = this.getHMMoves();
+		tmHMs.addAll(HMMoves);
 		List<Move> moveData = this.getMoves();
 		for (Map.Entry<Pokemon, boolean[]> compatEntry : compat.entrySet()) {
 			Pokemon pkmn = compatEntry.getKey();
@@ -1227,7 +1228,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 			for (int i = 1; i <= tmHMs.size(); i++) {
 				int move = tmHMs.get(i - 1);
 				Move mv = moveData.get(move);
-				double probability = 0.5;
+				double probability = 0.6;
 				if (preferSameType) {
 					if (pkmn.primaryType.equals(mv.type)
 							|| (pkmn.secondaryType != null && pkmn.secondaryType
@@ -1241,6 +1242,9 @@ public abstract class AbstractRomHandler implements RomHandler {
 				}
 				if (requiredEarlyOn.contains(move)) {
 					probability = Math.min(1.0, probability * 1.5);
+				}
+				if(HMMoves.contains(move)) {
+					probability = 1.0;
 				}
 				flags[i] = (this.random.nextDouble() < probability);
 			}
