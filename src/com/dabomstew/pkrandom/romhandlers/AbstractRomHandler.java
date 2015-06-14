@@ -1195,11 +1195,16 @@ public abstract class AbstractRomHandler implements RomHandler {
 				newTMs.add(oldTMs.get(i));
 			} else {
 				int chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
+				Move move = allMoves.get(chosenMove);
+				boolean isDamaging = move.power > 1 && move.hitratio > 79 && !RomFunctions.bannedForDamagingMove[move.number];
 				while (newTMs.contains(chosenMove)
 						|| RomFunctions.bannedRandomMoves[chosenMove]
 						|| hms.contains(chosenMove)
-						|| banned.contains(chosenMove)) {
+						|| banned.contains(chosenMove)
+						|| this.random.nextDouble() < 0.6 && !isDamaging) {
 					chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
+					move = allMoves.get(chosenMove);
+					isDamaging = move.power > 1 && move.hitratio > 79 && !RomFunctions.bannedForDamagingMove[move.number];
 				}
 				newTMs.add(chosenMove);
 			}
