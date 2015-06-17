@@ -1203,7 +1203,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 						|| RomFunctions.bannedRandomMoves[chosenMove]
 						|| hms.contains(chosenMove)
 						|| banned.contains(chosenMove)
-						|| isGoodTm && !(isDamaging && (move.type.isSpecial() ^ isSpecial == false))) {
+						|| isGoodTm && !(isDamaging && (move.type.isSpecial() ^ isSpecial == false) && (move.type != Type.NORMAL || this.random.nextDouble() < 0.7))) {
 					chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
 					move = allMoves.get(chosenMove);
 					isDamaging = move.power >= 60 && move.hitratio > 79 && !RomFunctions.bannedForDamagingMove[move.number];
@@ -2512,6 +2512,9 @@ public abstract class AbstractRomHandler implements RomHandler {
 					&& !bannedForThisGame.contains(mv.number)
 					&& (mv.type == typeOfMove || typeOfMove == null)) {
 				boolean isGoodMove = (mv.power >= 25 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial()));
+				if(mv.type == Type.NORMAL) {
+					isGoodMove = isGoodMove && this.random.nextDouble() < 0.7;
+				}
 				if(damaging ^ isGoodMove == false) {
 					canPick.add(mv);
 				}

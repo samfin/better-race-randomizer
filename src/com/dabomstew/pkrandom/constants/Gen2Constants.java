@@ -179,6 +179,8 @@ public class Gen2Constants {
 		nonBadItems.banRange(0xB5, 9);
 		// Lucky egg
 		nonBadItems.banSingles(126);
+		// Exp share
+		nonBadItems.banSingles(57);
 		// Shitty balls
 		nonBadItems.banSingles(5, 157, 159, 160, 161, 164, 165, 166, 177);
 	}

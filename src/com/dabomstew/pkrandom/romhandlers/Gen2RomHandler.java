@@ -87,7 +87,7 @@ class IcePuzzleGenerator {
 
 	int[] dist, dist_copy;
 	final int INF = 9999999;
-	
+
 	@SuppressWarnings("unchecked")
 	IcePuzzleGenerator(int W, int H, int x0, int y0, int x1, int y1) {
 		this.W = W;
