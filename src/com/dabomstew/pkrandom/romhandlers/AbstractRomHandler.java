@@ -514,6 +514,12 @@ public abstract class AbstractRomHandler implements RomHandler {
 					// Pick a random pokemon
 					int picked = this.random.nextInt(allPokes.size());
 					enc.pokemon = allPokes.get(picked);
+					int n_trials = 0;
+					while(n_trials < 50 && enc.level < 10 && firstEvolution(enc.pokemon) != null) {
+						n_trials += 1;
+						picked = this.random.nextInt(allPokes.size());
+						enc.pokemon = allPokes.get(picked);
+					}
 					if (area.battleTrappersBanned
 							&& hasBattleTrappingAbility(enc.pokemon)) {
 						// Skip past this Pokemon for now and just pick a random
@@ -604,6 +610,10 @@ public abstract class AbstractRomHandler implements RomHandler {
 					noLegendaryList) : new ArrayList<Pokemon>(mainPokemonList);
 			allPokes.removeAll(banned);
 			for (EncounterSet area : currentEncounters) {
+				int max_level = 0;
+				for(Encounter enc : area.encounters) {
+					max_level = Math.max(enc.level, max_level);
+				}
 				// Poke-set
 				Set<Pokemon> inArea = pokemonInArea(area);
 				// Build area map using catch em all
@@ -611,6 +621,12 @@ public abstract class AbstractRomHandler implements RomHandler {
 				for (Pokemon areaPk : inArea) {
 					int picked = this.random.nextInt(allPokes.size());
 					Pokemon pickedMN = allPokes.get(picked);
+					int n_trials = 0;
+					while(n_trials < 50 && max_level < 10 && firstEvolution(pickedMN) != null) {
+						n_trials += 1;
+						picked = this.random.nextInt(allPokes.size());
+						pickedMN = allPokes.get(picked);
+					}
 					if (area.battleTrappersBanned
 							&& hasBattleTrappingAbility(pickedMN)) {
 						// Skip past this Pokemon for now and just pick a random
@@ -728,6 +744,10 @@ public abstract class AbstractRomHandler implements RomHandler {
 			// Entirely random
 			for (EncounterSet area : currentEncounters) {
 				// Poke-set
+				int max_level = 0;
+				for(Encounter enc : area.encounters) {
+					max_level = Math.max(enc.level, max_level);
+				}
 				Set<Pokemon> inArea = pokemonInArea(area);
 				// Build area map using randoms
 				Map<Pokemon, Pokemon> areaMap = new TreeMap<Pokemon, Pokemon>();
@@ -736,7 +756,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 							: randomPokemon();
 					while (areaMap.containsValue(picked)
 							|| banned.contains(picked)
-							|| (area.battleTrappersBanned && hasBattleTrappingAbility(picked))) {
+							|| (area.battleTrappersBanned && hasBattleTrappingAbility(picked))
+							|| max_level < 10 && firstEvolution(picked) != null) {
 						picked = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
