@@ -146,6 +146,10 @@ public class Pokemon implements Comparable<Pokemon> {
 	public int bst() {
 		return hp + attack + defense + spatk + spdef + speed;
 	}
+	
+	public boolean goodStats() {
+		return speed >= 55 && (attack >= 85 || spatk >= 85);
+	}
 
 	public int bstForPowerLevels() {
 		// Take into account Shedinja's purposefully nerfed HP

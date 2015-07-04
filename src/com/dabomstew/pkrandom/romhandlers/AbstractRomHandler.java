@@ -515,7 +515,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					int picked = this.random.nextInt(allPokes.size());
 					enc.pokemon = allPokes.get(picked);
 					int n_trials = 0;
-					while(n_trials < 50 && enc.level < 10 && firstEvolution(enc.pokemon) != null) {
+					while(n_trials < 50 && enc.level < 10 && (firstEvolution(enc.pokemon) != null || !enc.pokemon.goodStats())) {
 						n_trials += 1;
 						picked = this.random.nextInt(allPokes.size());
 						enc.pokemon = allPokes.get(picked);
@@ -587,7 +587,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 							: randomPokemon();
 					while (banned.contains(enc.pokemon)
 							|| (area.battleTrappersBanned && hasBattleTrappingAbility(enc.pokemon)
-							|| enc.level < 10 && firstEvolution(enc.pokemon) != null)) {
+							|| enc.level < 10 && (firstEvolution(enc.pokemon) != null || !enc.pokemon.goodStats()))) {
 						enc.pokemon = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
@@ -622,7 +622,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					int picked = this.random.nextInt(allPokes.size());
 					Pokemon pickedMN = allPokes.get(picked);
 					int n_trials = 0;
-					while(n_trials < 50 && max_level < 10 && firstEvolution(pickedMN) != null) {
+					while(n_trials < 50 && max_level < 10 && (firstEvolution(pickedMN) != null || !pickedMN.goodStats())) {
 						n_trials += 1;
 						picked = this.random.nextInt(allPokes.size());
 						pickedMN = allPokes.get(picked);
@@ -757,7 +757,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					while (areaMap.containsValue(picked)
 							|| banned.contains(picked)
 							|| (area.battleTrappersBanned && hasBattleTrappingAbility(picked))
-							|| max_level < 10 && firstEvolution(picked) != null) {
+							|| max_level < 10 && (firstEvolution(picked) != null || !picked.goodStats())) {
 						picked = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
@@ -2521,7 +2521,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 		double spec = pkmn.spatk / 100.0;
 		boolean is_special = (spec >= phys);
 		double p = Math.abs(spec - phys);
-		p = 1 - 1 / (1 + Math.exp(-3 * p));;
+		p = 1 - 1 / (1 + Math.exp(-2 * p));;
 		if(this.random.nextDouble() < p)
 			is_special ^= true;
 		damaging = damaging || this.random.nextDouble() < 0.6;
@@ -2532,7 +2532,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 			if (mv != null && !RomFunctions.bannedRandomMoves[mv.number]
 					&& !bannedForThisGame.contains(mv.number)
 					&& (mv.type == typeOfMove || typeOfMove == null)) {
-				boolean isGoodMove = (mv.power >= 25 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial()));
+				boolean isGoodMove = (mv.power >= 40 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial()));
 				if(mv.type == Type.NORMAL) {
 					isGoodMove = isGoodMove && this.random.nextDouble() < 0.7;
 				}
