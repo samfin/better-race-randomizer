@@ -70,7 +70,7 @@ public class Gen2Constants {
 	public static final List<Integer> bannedLevelupMoves = Arrays.asList(168);
 
 	public static final List<Integer> brokenMoves = Arrays.asList(49, 82, 32,
-			90, 12);
+			90, 12, 14, 147);
 
 	public static final int tmBlockOneIndex = 191, tmBlockOneSize = 4,
 			tmBlockTwoIndex = 196, tmBlockTwoSize = 24,
