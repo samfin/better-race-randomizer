@@ -373,6 +373,15 @@ public abstract class AbstractRomHandler implements RomHandler {
 	}
 
 	private static final int WONDER_GUARD_INDEX = 25;
+	private static final int TRUANT_INDEX = 54;
+
+	private int getRandomAbility() {
+		int maxAbility = this.highestAbilityIndex();
+		int ability = this.random.nextInt(maxAbility) + 1;
+		while(ability == TRUANT_INDEX)
+			ability = this.random.nextInt(maxAbility) + 1;
+		return ability;
+	}
 
 	@Override
 	public void randomizeAbilities(boolean allowWonderGuard) {
@@ -383,7 +392,6 @@ public abstract class AbstractRomHandler implements RomHandler {
 
 		// Deal with "natural" abilities first regardless
 		List<Pokemon> allPokes = this.getPokemon();
-		int maxAbility = this.highestAbilityIndex();
 		for (Pokemon pk : allPokes) {
 			if (pk == null) {
 				continue;
@@ -394,27 +402,27 @@ public abstract class AbstractRomHandler implements RomHandler {
 					&& pk.ability2 != WONDER_GUARD_INDEX
 					&& pk.ability3 != WONDER_GUARD_INDEX) {
 				// Pick first ability
-				pk.ability1 = this.random.nextInt(maxAbility) + 1;
+				pk.ability1 = getRandomAbility();
 				// Wonder guard block
 				if (!allowWonderGuard) {
 					while (pk.ability1 == WONDER_GUARD_INDEX) {
-						pk.ability1 = this.random.nextInt(maxAbility) + 1;
+						pk.ability1 = getRandomAbility();
 					}
 				}
 
 				// Second ability?
 				if (this.random.nextDouble() < 0.5) {
 					// Yes, second ability
-					pk.ability2 = this.random.nextInt(maxAbility) + 1;
+					pk.ability2 = getRandomAbility();
 					// Wonder guard? Also block first ability from reappearing
 					if (allowWonderGuard) {
 						while (pk.ability2 == pk.ability1) {
-							pk.ability2 = this.random.nextInt(maxAbility) + 1;
+							pk.ability2 = getRandomAbility();
 						}
 					} else {
 						while (pk.ability2 == WONDER_GUARD_INDEX
 								|| pk.ability2 == pk.ability1) {
-							pk.ability2 = this.random.nextInt(maxAbility) + 1;
+							pk.ability2 = getRandomAbility();
 						}
 					}
 				} else {
@@ -434,18 +442,18 @@ public abstract class AbstractRomHandler implements RomHandler {
 				if (pk.ability1 != WONDER_GUARD_INDEX
 						&& pk.ability2 != WONDER_GUARD_INDEX
 						&& pk.ability3 != WONDER_GUARD_INDEX) {
-					pk.ability3 = this.random.nextInt(maxAbility) + 1;
+					pk.ability3 = getRandomAbility();
 					// Wonder guard? Also block other abilities from reappearing
 					if (allowWonderGuard) {
 						while (pk.ability3 == pk.ability1
 								|| pk.ability3 == pk.ability2) {
-							pk.ability3 = this.random.nextInt(maxAbility) + 1;
+							pk.ability3 = getRandomAbility();
 						}
 					} else {
 						while (pk.ability3 == WONDER_GUARD_INDEX
 								|| pk.ability3 == pk.ability1
 								|| pk.ability3 == pk.ability2) {
-							pk.ability3 = this.random.nextInt(maxAbility) + 1;
+							pk.ability3 = getRandomAbility();
 						}
 					}
 				}
