@@ -1230,6 +1230,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 				int chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
 				Move move = allMoves.get(chosenMove);
 				boolean isDamaging = move.power >= 60 && !RomFunctions.bannedForDamagingMove[move.number];
+				int n_trials = 0;
 				while (newTMs.contains(chosenMove)
 						|| RomFunctions.bannedRandomMoves[chosenMove]
 						|| hms.contains(chosenMove)
@@ -1238,6 +1239,11 @@ public abstract class AbstractRomHandler implements RomHandler {
 					chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
 					move = allMoves.get(chosenMove);
 					isDamaging = move.power >= 60 && !RomFunctions.bannedForDamagingMove[move.number];
+					n_trials += 1;
+					if(n_trials >= 100) {
+						// give up on finding a good move
+						isDamaging = true;
+					}
 				}
 				// System.out.println(isGoodTm + " " + isSpecial + " " + allMoves.get(chosenMove).name);
 				newTMs.add(chosenMove);
