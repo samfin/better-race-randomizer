@@ -278,6 +278,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 			}
 			pkmn.growthCurve = pkmn.isLegendary() ? ExpCurve.SLOW
 					: ExpCurve.MEDIUM_FAST;
+			if(Math.max(pkmn.attack, pkmn.spatk) <= 100)
+				pkmn.growthCurve = ExpCurve.MEDIUM_FAST;
 		}
 	}
 
