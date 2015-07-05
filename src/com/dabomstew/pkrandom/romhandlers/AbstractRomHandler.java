@@ -899,7 +899,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 			for (TrainerPokemon tp : t.pokemon) {
 				boolean wgAllowed = (!noEarlyWonderGuard) || tp.level >= 20;
 				tp.pokemon = pickReplacement(tp.pokemon, usePowerLevels, null,
-						noLegendaries, wgAllowed);
+						noLegendaries, wgAllowed, tp.level);
 			}
 		}
 
@@ -985,7 +985,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 				for (TrainerPokemon tp : t.pokemon) {
 					boolean wgAllowed = (!noEarlyWonderGuard) || tp.level >= 20;
 					tp.pokemon = pickReplacement(tp.pokemon, usePowerLevels,
-							typeForGroup, noLegendaries, wgAllowed);
+							typeForGroup, noLegendaries, wgAllowed, tp.level);
 				}
 			}
 		}
@@ -1010,7 +1010,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					boolean shedAllowed = (!noEarlyWonderGuard)
 							|| tp.level >= 20;
 					tp.pokemon = pickReplacement(tp.pokemon, usePowerLevels,
-							typeForTrainer, noLegendaries, shedAllowed);
+							typeForTrainer, noLegendaries, shedAllowed, tp.level);
 				}
 			}
 		}
@@ -2847,11 +2847,33 @@ public abstract class AbstractRomHandler implements RomHandler {
 		return null;
 	}
 
+	// yes this is necessary
+	private Map<Pokemon, Integer> cachedTimesEvolves = new HashMap<Pokemon, Integer>();
+
+	private Pokemon getRandomEvolvedPokemon(List<Pokemon> pickFrom, int level) {
+		List<Pokemon> canPick = new ArrayList<Pokemon>();
+		for(Pokemon pk : pickFrom) {
+			if(!cachedTimesEvolves.containsKey(pk)) {
+				cachedTimesEvolves.put(pk, timesEvolves(pk));
+			}
+			int timesEvolves = cachedTimesEvolves.get(pk);
+			// if 3-stage, must evolve at least once by level 16
+			if(timesEvolves >= 2 && level >= 16)
+				continue;
+			// must fully evolve by level 30
+			if(timesEvolves >= 1 && level >= 30)
+				continue;
+			canPick.add(pk);
+		}
+
+		return canPick.get(this.random.nextInt(canPick.size()));
+	}
+
 	private Map<Type, List<Pokemon>> cachedReplacementLists;
 	private List<Pokemon> cachedAllList;
 
 	private Pokemon pickReplacement(Pokemon current, boolean usePowerLevels,
-			Type type, boolean noLegendaries, boolean wonderGuardAllowed) {
+			Type type, boolean noLegendaries, boolean wonderGuardAllowed, int level) {
 		List<Pokemon> pickFrom = cachedAllList;
 		if (type != null) {
 			if (!cachedReplacementLists.containsKey(type)) {
@@ -2886,13 +2908,13 @@ public abstract class AbstractRomHandler implements RomHandler {
 			return canPick.get(this.random.nextInt(canPick.size()));
 		} else {
 			if (wonderGuardAllowed) {
-				return pickFrom.get(this.random.nextInt(pickFrom.size()));
+				return getRandomEvolvedPokemon(pickFrom, level);
 			} else {
-				Pokemon pk = pickFrom.get(this.random.nextInt(pickFrom.size()));
+				Pokemon pk = getRandomEvolvedPokemon(pickFrom, level);
 				while (pk.ability1 == WONDER_GUARD_INDEX
 						|| pk.ability2 == WONDER_GUARD_INDEX
 						|| pk.ability3 == WONDER_GUARD_INDEX) {
-					pk = pickFrom.get(this.random.nextInt(pickFrom.size()));
+					pk = getRandomEvolvedPokemon(pickFrom, level);
 				}
 				return pk;
 			}
