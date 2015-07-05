@@ -1219,7 +1219,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 				boolean isSpecial = random.nextDouble() < 0.5;
 				int chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
 				Move move = allMoves.get(chosenMove);
-				boolean isDamaging = move.power >= 60 && move.hitratio > 79 && !RomFunctions.bannedForDamagingMove[move.number];
+				boolean isDamaging = move.power >= 60 && !RomFunctions.bannedForDamagingMove[move.number];
 				while (newTMs.contains(chosenMove)
 						|| RomFunctions.bannedRandomMoves[chosenMove]
 						|| hms.contains(chosenMove)
@@ -1227,7 +1227,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 						|| isGoodTm && !(isDamaging && (move.type.isSpecial() ^ isSpecial == false) && (move.type != Type.NORMAL || this.random.nextDouble() < 0.7))) {
 					chosenMove = this.random.nextInt(allMoves.size() - 1) + 1;
 					move = allMoves.get(chosenMove);
-					isDamaging = move.power >= 60 && move.hitratio > 79 && !RomFunctions.bannedForDamagingMove[move.number];
+					isDamaging = move.power >= 60 && !RomFunctions.bannedForDamagingMove[move.number];
 				}
 				// System.out.println(isGoodTm + " " + isSpecial + " " + allMoves.get(chosenMove).name);
 				newTMs.add(chosenMove);
@@ -2524,6 +2524,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 		p = 1 - 1 / (1 + Math.exp(-2 * p));;
 		if(this.random.nextDouble() < p)
 			is_special ^= true;
+		boolean high_acc = damaging;
 		damaging = damaging || this.random.nextDouble() < 0.6;
 
 		// Filter by type, and if necessary, by damage
@@ -2532,7 +2533,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 			if (mv != null && !RomFunctions.bannedRandomMoves[mv.number]
 					&& !bannedForThisGame.contains(mv.number)
 					&& (mv.type == typeOfMove || typeOfMove == null)) {
-				boolean isGoodMove = (mv.power >= 40 && mv.hitratio > 79 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial()));
+				boolean isGoodMove = (mv.power >= 40 && !RomFunctions.bannedForDamagingMove[mv.number] && !(is_special ^ mv.type.isSpecial()));
+				isGoodMove &= !high_acc || mv.hitratio > 79;
 				if(mv.type == Type.NORMAL) {
 					isGoodMove = isGoodMove && this.random.nextDouble() < 0.7;
 				}
