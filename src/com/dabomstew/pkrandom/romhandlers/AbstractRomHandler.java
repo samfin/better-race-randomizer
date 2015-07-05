@@ -515,7 +515,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					int picked = this.random.nextInt(allPokes.size());
 					enc.pokemon = allPokes.get(picked);
 					int n_trials = 0;
-					while(n_trials < 50 && enc.level < 10 && (firstEvolution(enc.pokemon) != null || !enc.pokemon.goodStats())) {
+					while(n_trials < 50 && enc.level < 10 && !isGoodCatchable(enc.pokemon)) {
 						n_trials += 1;
 						picked = this.random.nextInt(allPokes.size());
 						enc.pokemon = allPokes.get(picked);
@@ -587,7 +587,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 							: randomPokemon();
 					while (banned.contains(enc.pokemon)
 							|| (area.battleTrappersBanned && hasBattleTrappingAbility(enc.pokemon)
-							|| enc.level < 10 && (firstEvolution(enc.pokemon) != null || !enc.pokemon.goodStats()))) {
+							|| enc.level < 10 && !isGoodCatchable(enc.pokemon))) {
 						enc.pokemon = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
@@ -622,7 +622,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					int picked = this.random.nextInt(allPokes.size());
 					Pokemon pickedMN = allPokes.get(picked);
 					int n_trials = 0;
-					while(n_trials < 50 && max_level < 10 && (firstEvolution(pickedMN) != null || !pickedMN.goodStats())) {
+					while(n_trials < 50 && max_level < 10 && !isGoodCatchable(pickedMN)) {
 						n_trials += 1;
 						picked = this.random.nextInt(allPokes.size());
 						pickedMN = allPokes.get(picked);
@@ -757,7 +757,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 					while (areaMap.containsValue(picked)
 							|| banned.contains(picked)
 							|| (area.battleTrappersBanned && hasBattleTrappingAbility(picked))
-							|| max_level < 10 && (firstEvolution(picked) != null || !picked.goodStats())) {
+							|| max_level < 10 && !isGoodCatchable(picked)) {
 						picked = noLegendaries ? randomNonLegendaryPokemon()
 								: randomPokemon();
 					}
@@ -2551,6 +2551,10 @@ public abstract class AbstractRomHandler implements RomHandler {
 			// System.out.println(pkmn.name + "\t" + canPick.get(this.random.nextInt(canPick.size())).name + "\t" + damaging + "\t" + is_special + "\t" + p);
 			return canPick.get(this.random.nextInt(canPick.size())).number;
 		}
+	}
+
+	private boolean isGoodCatchable(Pokemon pk) {
+		return firstEvolution(pk) == null && pk.goodStats() && pk.bst() <= 600;
 	}
 
 	private List<Pokemon> pokemonOfType(Type type, boolean noLegendaries) {
