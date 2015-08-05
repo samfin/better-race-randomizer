@@ -2861,7 +2861,7 @@ public abstract class AbstractRomHandler implements RomHandler {
 			if(timesEvolves >= 2 && level >= 16)
 				continue;
 			// must fully evolve by level 30
-			if(timesEvolves >= 1 && level >= 30)
+			if(timesEvolves >= 1 && level >= 37)
 				continue;
 			canPick.add(pk);
 		}

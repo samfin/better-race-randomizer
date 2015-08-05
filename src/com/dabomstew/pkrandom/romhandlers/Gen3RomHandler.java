@@ -1097,6 +1097,7 @@ public class Gen3RomHandler extends AbstractGBRomHandler {
 			tr.poketype = pokeDataType;
 			tr.name = this.readVariableLengthString(trOffset + 4);
 			tr.fullDisplayName = tcnames.get(trainerclass) + " " + tr.name;
+			System.out.println(tr.fullDisplayName + " " + tr.offset + " " + entryLen);
 			// Pokemon data!
 			if (pokeDataType == 0) {
 				// blocks of 8 bytes
@@ -1180,6 +1181,7 @@ public class Gen3RomHandler extends AbstractGBRomHandler {
 			// over
 			rom[trOffset] = 0;
 			rom[trOffset + (entryLen - 8)] = (byte) tr.pokemon.size();
+			// rom[trOffset + 24] = 1;
 			int pointerToPokes = readPointer(trOffset + (entryLen - 4));
 			Iterator<TrainerPokemon> pokes = tr.pokemon.iterator();
 			// Pokemon data!
