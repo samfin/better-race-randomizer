@@ -2556,4 +2556,9 @@ public class Gen2RomHandler extends AbstractGBRomHandler {
 		// just cut
 		return Gen2Constants.earlyRequiredHMMoves;
 	}
+
+	@Override
+	public int getGen() {
+		return 2;
+	}
 }

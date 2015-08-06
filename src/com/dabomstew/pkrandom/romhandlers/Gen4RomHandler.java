@@ -2562,4 +2562,9 @@ public class Gen4RomHandler extends AbstractDSRomHandler {
 			return Gen4Constants.dpptEarlyRequiredHMMoves;
 		}
 	}
+
+	@Override
+	public int getGen() {
+		return 4;
+	}
 }

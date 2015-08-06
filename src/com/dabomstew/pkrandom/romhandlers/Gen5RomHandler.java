@@ -2379,4 +2379,9 @@ public class Gen5RomHandler extends AbstractDSRomHandler {
 			return Gen5Constants.bw1EarlyRequiredHMMoves;
 		}
 	}
+
+	@Override
+	public int getGen() {
+		return 5;
+	}
 }

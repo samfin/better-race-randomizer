@@ -53,6 +53,8 @@ public interface RomHandler {
 	public boolean saveRom(String filename);
 
 	public String loadedFilename();
+	
+	public int getGen();
 
 	// Get a List of Pokemon objects in this game.
 	// 0 = null 1-whatever = the Pokemon.

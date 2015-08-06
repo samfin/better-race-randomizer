@@ -2485,4 +2485,9 @@ public class Gen1RomHandler extends AbstractGBRomHandler {
 					extraDataBlock.length);
 		}
 	}
+
+	@Override
+	public int getGen() {
+		return 1;
+	}
 }

@@ -2690,4 +2690,9 @@ public class Gen3RomHandler extends AbstractGBRomHandler {
 	public boolean isROMHack() {
 		return this.isRomHack;
 	}
+
+	@Override
+	public int getGen() {
+		return 3;
+	}
 }
