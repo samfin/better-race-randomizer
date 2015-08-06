@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -2569,7 +2570,23 @@ public abstract class AbstractRomHandler implements RomHandler {
 		}
 	}
 
+	Set<Pokemon> bannedCatchables = null;
 	private boolean isGoodCatchable(Pokemon pk) {
+		if(bannedCatchables == null) {
+			bannedCatchables = new HashSet<Pokemon>();
+			if(getGen() == 1) {
+				// alakazam, gengar, jolteon, tentacruel, mewtwo, mew, starmie, zapdos, tauros
+				for(int x : new int[] {65, 94, 135, 150, 151, 121, 145, 128}) {
+					bannedCatchables.add(mainPokemonList.get(x - 1));
+				}
+			} else if(getGen() == 2) {
+				// kanga, tauros
+				for(int x : new int[] {115, 128}) {
+					bannedCatchables.add(mainPokemonList.get(x - 1));
+				}
+			}
+		}
+		if(bannedCatchables.contains(pk)) return false;
 		return firstEvolution(pk) == null && pk.goodStats() && pk.bst() <= 600;
 	}
 
