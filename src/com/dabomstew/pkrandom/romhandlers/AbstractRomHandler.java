@@ -1284,7 +1284,8 @@ public abstract class AbstractRomHandler implements RomHandler {
 				if (requiredEarlyOn.contains(move)) {
 					probability = Math.min(1.0, probability * 1.5);
 				}
-				if(HMMoves.contains(move)) {
+				// exclude gen 1 surf
+				if(!(getGen() == 1 && move == 57) && HMMoves.contains(move)) {
 					probability = 1.0;
 				}
 				flags[i] = (this.random.nextDouble() < probability);
